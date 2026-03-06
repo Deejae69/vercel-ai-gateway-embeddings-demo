@@ -3,13 +3,14 @@ import { db } from '../db';
 import { cosineDistance, desc, gt, sql } from 'drizzle-orm';
 import { embeddings } from '../db/schema/embeddings';
 
-const embeddingModel = 'openai/text-embedding-ada-002';
+const embeddingModel = 'openai/text-embedding-3-small';
 
 const generateChunks = (input: string): string[] => {
   return input
     .trim()
-    .split('.')
-    .filter(i => i !== '');
+    .split(/(?<=[.?!])\s+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
 };
 
 export const generateEmbeddings = async (
